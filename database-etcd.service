@@ -1,0 +1,11 @@
+[Unit]
+Description=Openstack Database etcd registry
+BindsTo=database.service
+
+[Service]
+ExecStart=/bin/sh -c "while true; do etcdctl set /services/osdb $(hostname -i | tr -d [:space:]):3306 --ttl 60;sleep 45;done"
+ExecStop=/usr/bin/etcdctl rm /services/osdb
+
+[X-Fleet]
+Conflicts=database-etcd.service
+MachineOf=database.service
